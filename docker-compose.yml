@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+  api:
+    build: ./backend_dart
+    container_name: jugador12-api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      # ---- Base de datos (coinciden con tu server.dart) ----
+      DATABASE_HOST: db
+      DATABASE_PORT: "5432"
+      DATABASE_USER: jugador_user
+      DATABASE_PASSWORD: micontrasenasegura123
+      DATABASE_NAME: jugador_db
+
+      # ---- API / Server ----
+      PORT: "8080"
+      JWT_SECRET: super-secreto-largo-y-unico-pon-algo-mejor
+      OTP_EXP_MINUTES: "10"
+
+      # ---- SMTP (Gmail) ----
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: "587"
+      SMTP_USERNAME: xxxperrin@gmail.com
+      SMTP_PASSWORD: bdcmyzumsqojbjmb # <-- tu contraseña de aplicación SIN espacios
+      SMTP_FROM: "xxxperrin@gmail.com" # <-- el remitente (tu Gmail)
+
+      # (si usas esto en otro lado)
+      OLLAMA_HOST: host.docker.internal
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    # Para que el contenedor pueda resolver host.docker.internal en Linux
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  db:
+    image: pgvector/pgvector:pg15
+    container_name: jugador12-db
+    restart: always
+    environment:
+      POSTGRES_USER: jugador_user
+      POSTGRES_PASSWORD: micontrasenasegura123
+      POSTGRES_DB: jugador_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jugador_user -d jugador_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 5s
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:

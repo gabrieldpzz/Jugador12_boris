@@ -1,0 +1,19 @@
+name: backend_dart
+description: Un servidor de backend.
+version: 1.0.0
+
+environment:
+  sdk: ^3.0.0
+
+dependencies:
+  shelf: ^1.4.0
+  shelf_router: ^1.1.0
+  postgres: ^2.6.1
+  http: ^1.1.0
+  mailer: ^6.1.0 # <--- SMTP
+  dart_jsonwebtoken: ^2.14.0 # <--- JWT
+  bcrypt: ^1.1.3 # <--- Hash de contraseñas
+
+dev_dependencies:
+  lints: ^2.0.0
+  test: ^1.21.0
